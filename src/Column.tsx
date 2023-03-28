@@ -1,4 +1,3 @@
-import React from 'react';
 import * as S from './styles';
 import Card from './Card';
 import AddNewItem from './AddNewItem';
