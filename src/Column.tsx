@@ -1,7 +1,10 @@
+import { useCallback } from 'react';
+
+import { useAppState } from './state/AppStateContext';
+import { addTask } from './state/actions';
 import * as S from './styles';
 import Card from './Card';
 import AddNewItem from './AddNewItem';
-import { useAppContext } from './state/AppStateContext';
 
 type ColumnProps = {
   text: string;
@@ -9,11 +12,13 @@ type ColumnProps = {
 }
 
 const Column = ({ text, id }: ColumnProps): JSX.Element => {
-  const { getTaskByListId } = useAppContext();
+  const { getTaskByListId, dispatch } = useAppState();
 
   const tasks = getTaskByListId(id);
 
-  const renderTasks = () => tasks.map(task => <Card text={task.text} key={task.id} id={task.id} />);
+  const renderTasks = () => tasks.map((task) => <Card text={task.text} key={task.id} id={task.id} />);
+
+  const handleAdd = useCallback((text: string) => dispatch(addTask(text, id)), [id]);
 
   return (
     <S.ColumnContainer>
@@ -22,7 +27,7 @@ const Column = ({ text, id }: ColumnProps): JSX.Element => {
 
       <AddNewItem
         toggleButtonText='+ Add another card'
-        onAdd={console.log}
+        onAdd={handleAdd}
         dark
       />
     </S.ColumnContainer>
