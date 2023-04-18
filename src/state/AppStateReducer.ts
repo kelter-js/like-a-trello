@@ -40,11 +40,10 @@ const appStateReducer = (draft: AppState, action: Action): AppState | void => {
       break;
     }
     case 'MOVE_LIST': {
-      const { draggedId, hoverId } = action.payload;
-      const dragIndex = findItemIndexById(draft.lists, draggedId);
-      const hoverIndex = findItemIndexById(draft.lists, hoverId);
-
-      draft.lists = moveItem(draft.lists, dragIndex, hoverIndex) as IList[];
+      const { draggedId, hoverId } = action.payload
+      const dragIndex = findItemIndexById(draft.lists, draggedId)
+      const hoverIndex = findItemIndexById(draft.lists, hoverId)
+      draft.lists = moveItem(draft.lists, dragIndex, hoverIndex)
       break;
     }
     case 'SET_DRAGGED_ITEM': {

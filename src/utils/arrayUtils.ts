@@ -7,7 +7,7 @@ export const findItemIndexById = <T extends Item>(items: T[], id: string) => {
 }
 
 export const removeItemAtIndex = <T>(array: T[], index: number) => {
-  return [...array.slice(0, index), array.slice(index + 1)];
+  return [...array.slice(0, index), ...array.slice(index + 1)];
 }
 
 export const insertItemAtIndex = <T>(array: T[], item: T, index: number) => {
