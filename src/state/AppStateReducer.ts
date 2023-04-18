@@ -1,7 +1,7 @@
 import { Action } from "./actions";
-import { AppState } from "./AppStateContext";
 import { nanoid } from "nanoid";
-import { findItemIndexById } from "../utils/arrayUtils";
+import { findItemIndexById, moveItem } from "../utils/arrayUtils";
+import { ColumnDragItem } from "../dragItem";
 
 export interface ITask {
   id: string;
@@ -10,6 +10,11 @@ export interface ITask {
 
 export interface IList extends ITask {
   tasks: ITask[],
+}
+
+export type AppState = {
+  lists: IList[]
+  draggedItem: ColumnDragItem | null;
 }
 
 const appStateReducer = (draft: AppState, action: Action): AppState | void => {
@@ -32,6 +37,18 @@ const appStateReducer = (draft: AppState, action: Action): AppState | void => {
         text
       });
 
+      break;
+    }
+    case 'MOVE_LIST': {
+      const { draggedId, hoverId } = action.payload;
+      const dragIndex = findItemIndexById(draft.lists, draggedId);
+      const hoverIndex = findItemIndexById(draft.lists, hoverId);
+
+      draft.lists = moveItem(draft.lists, dragIndex, hoverIndex) as IList[];
+      break;
+    }
+    case 'SET_DRAGGED_ITEM': {
+      draft.draggedItem = action.payload;
       break;
     }
 

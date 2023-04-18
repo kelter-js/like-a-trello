@@ -1,10 +1,14 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
+import { useDrop } from 'react-dnd';
+import { throttle } from 'throttle-debounce-ts';
 
 import { useAppState } from './state/AppStateContext';
-import { addTask } from './state/actions';
-import * as S from './styles';
+import { moveList, addTask } from './state/actions';
+import useItemDrag from './hooks/useItemDrag';
 import Card from './Card';
 import AddNewItem from './AddNewItem';
+import isHidden from './utils/isHidden';
+import * as S from './styles';
 
 type ColumnProps = {
   text: string;
@@ -12,7 +16,27 @@ type ColumnProps = {
 }
 
 const Column = ({ text, id }: ColumnProps): JSX.Element => {
-  const { getTaskByListId, dispatch } = useAppState();
+  const { draggedItem, getTaskByListId, dispatch } = useAppState();
+
+  const columnElement = useRef<HTMLDivElement>(null);
+  const [_, drop] = useDrop({
+    accept: 'COLUMN',
+    hover: throttle(200, () => {
+      if (!draggedItem) {
+        return;
+      }
+
+      if (draggedItem.type === 'COLUMN') {
+        if (draggedItem.id === id) {
+          return;
+        }
+
+        dispatch(moveList(draggedItem.id, id));
+      }
+    }),
+  });
+
+  const { drag } = useItemDrag({ type: 'COLUMN', id, text });
 
   const tasks = getTaskByListId(id);
 
@@ -20,8 +44,10 @@ const Column = ({ text, id }: ColumnProps): JSX.Element => {
 
   const handleAdd = useCallback((text: string) => dispatch(addTask(text, id)), [id]);
 
+  drag(drop(columnElement));
+
   return (
-    <S.ColumnContainer>
+    <S.ColumnContainer ref={columnElement} isHidden={isHidden(draggedItem, 'COLUMN', id)}>
       <S.ColumnTitle>{text}</S.ColumnTitle>
       {renderTasks()}
 
