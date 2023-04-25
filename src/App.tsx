@@ -5,6 +5,7 @@ import { addList } from './state/actions';
 import { AppContainer } from './styles';
 import Column from './Column';
 import AddNewItem from './AddNewItem';
+import CustomDragLayer from './CustomDragLayers';
 
 const App = () => {
   const { lists, dispatch } = useAppState();
@@ -15,6 +16,8 @@ const App = () => {
 
   return (
     <AppContainer>
+      <CustomDragLayer />
+      
       {renderLists()}
 
       <AddNewItem

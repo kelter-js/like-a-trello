@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useMemo } from 'react';
 import { useDrop } from 'react-dnd';
 import { throttle } from 'throttle-debounce-ts';
 
@@ -13,9 +13,10 @@ import * as S from './styles';
 type ColumnProps = {
   text: string;
   id: string;
+  isPreview?: boolean;
 }
 
-const Column = ({ text, id }: ColumnProps): JSX.Element => {
+const Column = ({ text, id, isPreview }: ColumnProps): JSX.Element => {
   const { draggedItem, getTaskByListId, dispatch } = useAppState();
 
   const columnElement = useRef<HTMLDivElement>(null);
@@ -46,8 +47,12 @@ const Column = ({ text, id }: ColumnProps): JSX.Element => {
 
   drag(drop(columnElement));
 
+  const isItemHidden = useMemo(() => {
+    return isHidden(draggedItem, 'COLUMN', id, isPreview);
+  }, [draggedItem, id]);
+
   return (
-    <S.ColumnContainer ref={columnElement} isHidden={isHidden(draggedItem, 'COLUMN', id)}>
+    <S.ColumnContainer isPreview={isPreview} ref={columnElement} isHidden={isItemHidden}>
       <S.ColumnTitle>{text}</S.ColumnTitle>
       {renderTasks()}
 

@@ -6,10 +6,20 @@ type AddItemButtonProps = {
 
 interface IDragPreviewContainerProps {
   isHidden?: boolean;
+  isPreview?: boolean;
+}
+
+interface DragPreviewWrapperProps {
+  position: {
+    x: number;
+    y: number;
+  }
 }
 
 export const DragPreviewContainer = styled.div<IDragPreviewContainerProps>`
-  opacity: ${(props) => (props.isHidden ? 0.3 : 1)};
+  transform: ${(props) =>
+    props.isPreview ? "rotate(5deg)" : undefined};
+  opacity: ${(props) => (props.isHidden ? 0 : 1)};
 `;
 
 export const AppContainer = styled.div`
@@ -64,28 +74,46 @@ export const AddItemButton = styled.button<AddItemButtonProps>`
 `;
 
 export const NewItemFormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  max-width: 300px;
-  width: 100%;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+max-width: 300px;
+width: 100%;
 `;
 
 export const NewItemButton = styled.button`
-  background-color: #5aac44;
-  border-radius: 3px;
-  border: none;
-  box-shadow: none;
-  color: #fff;
-  padding: 6px 12px;
-  text-align: center;
+background-color: #5aac44;
+border-radius: 3px;
+border: none;
+box-shadow: none;
+color: #fff;
+padding: 6px 12px;
+text-align: center;
 `;
 
 export const NewItemInput = styled.input`
-  border-radius: 3px;
-  border: none;
-  box-shadow: #091e4240 0px 1px 0px 0px;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  width: 100%;
+border-radius: 3px;
+border: none;
+box-shadow: #091e4240 0px 1px 0px 0px;
+margin-bottom: 0.5rem;
+padding: 0.5rem 1rem;
+width: 100%;
 `;
+
+export const CustomDragLayerContainer = styled.div`
+position: fixed;
+top: 0;
+left: 0;
+height: 100%;
+width: 100%;
+z-index: 100;
+pointer-events: none;
+`;
+
+export const DragPreviewWrapper = styled.div.attrs<DragPreviewWrapperProps>(
+  ({ position: { x, y } }) => ({
+    style: {
+      transform: `translate(${x}px, ${y}px)`
+    }
+  })
+) <DragPreviewWrapperProps>``
