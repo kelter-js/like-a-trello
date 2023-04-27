@@ -6,9 +6,10 @@ import { useAppState } from "./state/AppStateContext";
 
 const CustomDragLayer = (): JSX.Element | null => {
   const { draggedItem } = useAppState();
+
   const { currentOffset } = useDragLayer((monitor) => ({
     currentOffset: monitor.getSourceClientOffset()
-  }))
+  }));
 
   return draggedItem && currentOffset ? (
     <CustomDragLayerContainer>
