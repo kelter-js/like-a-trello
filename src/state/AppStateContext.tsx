@@ -1,8 +1,8 @@
 import { ReactNode, createContext, useContext, Dispatch } from 'react';
-import appStateReducer, { IList, ITask } from './AppStateReducer';
+import appStateReducer from './AppStateReducer';
 import { Action } from './actions';
 import { useImmerReducer } from 'use-immer';
-import { ColumnDragItem } from "../dragItem";
+import { DragItem } from "../dragItem";
 
 type Task = {
   id: string;
@@ -17,11 +17,11 @@ type List = {
 
 export type AppState = {
   lists: List[];
-  draggedItem: ColumnDragItem | null;
+  draggedItem: DragItem | null;
 }
 
 interface IContextProps {
-  draggedItem: ColumnDragItem | null;
+  draggedItem: DragItem | null;
   lists: List[];
   getTaskByListId: (id: string) => Task[];
   dispatch: Dispatch<Action>;

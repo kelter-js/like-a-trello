@@ -1,7 +1,7 @@
-import { ColumnDragItem } from "../dragItem";
+import { DragItem } from "../dragItem";
 
 const isHidden = (
-  draggedItem: ColumnDragItem | null,
+  draggedItem: DragItem | null,
   itemType: string,
   id: string,
   isPreview?: boolean,

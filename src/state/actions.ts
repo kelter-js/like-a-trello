@@ -1,4 +1,4 @@
-import { ColumnDragItem } from "../dragItem";
+import { DragItem } from "../dragItem";
 
 interface IAddListAction {
   type: 'ADD_LIST';
@@ -17,10 +17,20 @@ interface IMoveListAction {
 
 interface ISetDraggedItemAction {
   type: 'SET_DRAGGED_ITEM';
-  payload: ColumnDragItem | null;
+  payload: DragItem | null;
 }
 
-export type Action = IAddListAction | IAddTaskAction | IMoveListAction | ISetDraggedItemAction;
+interface IMoveTaskAction {
+  type: 'MOVE_TASK';
+  payload: {
+    draggedItemId: string;
+    hoveredItemId: string | null;
+    sourceColumnId: string;
+    targetColumnId: string;
+  }
+}
+
+export type Action = IAddListAction | IAddTaskAction | IMoveListAction | ISetDraggedItemAction | IMoveTaskAction;
 
 export const addTask = (text: string, listId: string): Action => {
   return {
@@ -49,10 +59,26 @@ export const moveList = (draggedId: string, hoverId: string): Action => {
   }
 }
 
-export const setDraggedItem = (draggedItem: ColumnDragItem | null): Action => {
+export const setDraggedItem = (draggedItem: DragItem | null): Action => {
   return {
     type: 'SET_DRAGGED_ITEM',
     payload: draggedItem
+  }
+}
+
+export const moveTask = (draggedItemId: string,
+  hoveredItemId: string | null,
+  sourceColumnId: string,
+  targetColumnId: string,
+): Action => {
+  return {
+    type: 'MOVE_TASK',
+    payload: {
+      draggedItemId,
+      hoveredItemId,
+      sourceColumnId,
+      targetColumnId,
+    }
   }
 }
 

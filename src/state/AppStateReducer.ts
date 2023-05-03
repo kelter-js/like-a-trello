@@ -1,7 +1,7 @@
 import { Action } from "./actions";
 import { nanoid } from "nanoid";
 import { findItemIndexById, moveItem } from "../utils/arrayUtils";
-import { ColumnDragItem } from "../dragItem";
+import { DragItem } from "../dragItem";
 
 export interface ITask {
   id: string;
@@ -14,7 +14,7 @@ export interface IList extends ITask {
 
 export type AppState = {
   lists: IList[]
-  draggedItem: ColumnDragItem | null;
+  draggedItem: DragItem | null;
 }
 
 const appStateReducer = (draft: AppState, action: Action): AppState | void => {
@@ -48,6 +48,26 @@ const appStateReducer = (draft: AppState, action: Action): AppState | void => {
     }
     case 'SET_DRAGGED_ITEM': {
       draft.draggedItem = action.payload;
+      break;
+    }
+    case 'MOVE_TASK': {
+      const {
+        draggedItemId,
+        hoveredItemId,
+        sourceColumnId,
+        targetColumnId
+      } = action.payload;
+
+      const sourceListIndex = findItemIndexById(draft.lists, sourceColumnId);
+      const targetListIndex = findItemIndexById(draft.lists, targetColumnId);
+
+      const dragIndex = findItemIndexById(draft.lists[sourceListIndex].tasks, draggedItemId);
+      const hoverIndex = hoveredItemId ? findItemIndexById(draft.lists[targetListIndex].tasks, hoveredItemId) : 0;
+
+      const item = draft.lists[sourceListIndex].tasks[dragIndex];
+
+      draft.lists[sourceListIndex].tasks.splice(dragIndex, 1);
+      draft.lists[targetListIndex].tasks.splice(hoverIndex, 0, item);
       break;
     }
 

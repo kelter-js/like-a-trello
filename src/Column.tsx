@@ -3,7 +3,7 @@ import { useDrop } from 'react-dnd';
 import { throttle } from 'throttle-debounce-ts';
 
 import { useAppState } from './state/AppStateContext';
-import { moveList, addTask } from './state/actions';
+import { moveList, addTask, moveTask, setDraggedItem } from './state/actions';
 import useItemDrag from './hooks/useItemDrag';
 import Card from './Card';
 import AddNewItem from './AddNewItem';
@@ -21,7 +21,7 @@ const Column = ({ text, id, isPreview }: ColumnProps): JSX.Element => {
 
   const columnElement = useRef<HTMLDivElement>(null);
   const [_, drop] = useDrop({
-    accept: 'COLUMN',
+    accept: ['COLUMN', 'CARD'],
     hover: throttle(200, () => {
       if (!draggedItem) {
         return;
@@ -33,6 +33,15 @@ const Column = ({ text, id, isPreview }: ColumnProps): JSX.Element => {
         }
 
         dispatch(moveList(draggedItem.id, id));
+      } else {
+        if (draggedItem.columnId === id || tasks.length) {
+          return;
+        }
+
+        dispatch(
+          moveTask(draggedItem.id, null, draggedItem.columnId, id)
+        );
+        dispatch(setDraggedItem({ ...draggedItem, columnId: id }));
       }
     }),
   });
@@ -41,7 +50,7 @@ const Column = ({ text, id, isPreview }: ColumnProps): JSX.Element => {
 
   const tasks = getTaskByListId(id);
 
-  const renderTasks = () => tasks.map((task) => <Card text={task.text} key={task.id} id={task.id} />);
+  const renderTasks = () => tasks.map((task) => <Card columnId={id} text={task.text} key={task.id} id={task.id} />);
 
   const handleAdd = useCallback((text: string) => dispatch(addTask(text, id)), [id]);
 
