@@ -3,6 +3,12 @@ import appStateReducer from './AppStateReducer';
 import { Action } from './actions';
 import { useImmerReducer } from 'use-immer';
 import { DragItem } from "../dragItem";
+import withInitialState from '../withInitialState';
+
+interface AppStateProviderProps {
+  children: ReactNode
+  initialState: AppState
+}
 
 type Task = {
   id: string;
@@ -72,4 +78,4 @@ const AppStateProvider = ({ children }: AppStateProvider): JSX.Element => {
   );
 }
 
-export default AppStateProvider;
+export default withInitialState<AppStateProviderProps>(AppStateProvider);
